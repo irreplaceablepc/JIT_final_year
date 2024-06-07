@@ -1,0 +1,46 @@
+<header class="flex items-center justify-between p-4 bg-white dark:bg-white-800 shadow-md border-b-2 border-white-500">
+    <div class="flex items-center space-x-2">
+      <img aria-hidden="true" alt="logo" src="/img/logo1.png" class="h-10 w-10"/>
+      <span class="font-bold text-xl"></span>
+    </div>
+
+    <input type="text" placeholder="Search" class="border rounded-full px-4 py-2 flex-grow max-w-xs mx-4" id="h-search-bar" type="search" class="h-form-control" placeholder="Search" aria-label="Search" autocomplete="on"/>
+    <div id="search-results"></div>
+
+    
+    <div class="flex items-center space-x-4">
+        <% if(locals.user) {%>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-full" type="button" class="h-button" data-toggle="modal" data-target="#post-modal" id="post-modal-trigger" onclick="togglePage('page1')">+ Create Post</button>
+        <%} %>
+    </div>
+    
+  </header>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#h-search-bar').on('input', async (event) => {
+const query = event.target.value.trim();
+
+try {
+    const users = await $.get(`/users/search?query=${query}`);
+    
+
+    // Display search results
+    $('#search-results').empty();
+    users.forEach(user => {
+        $('#search-results').append(`<div style="display: flex; background-color: #cccc"><img src="${user.avatar}" onerror="this.onerror=null; this.src='/img/avatar.png'"/><a href="/users/profile/${user._id}"><h3>${user.name}</h3></a></div>`);
+    });
+
+    // Show search results div
+    $('#search-results').addClass('show');
+} catch (error) {
+    console.error(error);
+}
+});
+
+
+</script>
+
+
+<script src="/js/others.js"></script>

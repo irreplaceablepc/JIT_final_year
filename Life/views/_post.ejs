@@ -1,0 +1,70 @@
+<div class="max-w-lg mx-auto my-4 bg-white dark:bg-white-800 rounded-lg shadow-md overflow-hidden">
+    <div class="p-4">
+        <div class="flex items-center mb-4">
+            <img src="<%= post.user.avatar %>" alt="Profile Picture" class="w-10 h-10 rounded-full mr-4" crossorigin="anonymous" onerror="this.onerror=null; this.src='/img/avatar.png'">
+            <div>
+                <p class="text-sm font-bold text-black-900 dark:text-black-100"><%= post.user.name %></p>
+                <p class="text-sm text-zinc-600 dark:text-zinc-400">@<%= post.user.username %></p>
+            </div>
+            <div class="ml-auto">
+                <form action="/users/follow" method="post">
+                    <input type="hidden" name="current_user" value="<%= current_user %>">
+                    <input type="hidden" name="followingId" value="<%= post.user.id %>">
+                    <button class="text-zinc-400 dark:text-zinc-500 focus:outline-none">
+                        <img aria-hidden="true" alt="menu icon" src="/icons/user-follow-svgrepo-com.svg" class="w-6 h-6"/>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <img src="<%= post.pimg %>" alt="" class="w-full mb-4" crossorigin="anonymous">
+        <h2><%= post.content %></h2>
+        <div class="flex items-center justify-between text-zinc-700 dark:text-zinc-300">
+            <div class="flex items-center space-x-2">
+                <% if (locals.user) { %>
+                    <form action="/likes/toggle?id=<%= post._id %>&type=Post" method="POST">
+                <button class="focus:outline-none">
+                    <img aria-hidden="true" alt="heart icon" src="/icons/heart-like-svgrepo-com.svg" class="w-6 h-6"/>
+                </button>
+                </form>
+                <% } else { %>
+                    <p>Likes</p>
+                <% } %>
+                <h2 class="font-bold text-zinc-900 dark:text-black-100"><%-post.likes.length-%></h2>
+                <button class="focus:outline-none">
+                    <img aria-hidden="true" alt="message icon" src="/icons/comments-svgrepo-com.svg" class="w-6 h-6"/>
+                </button>
+                <h2 class="font-bold text-zinc-900 dark:text-black-100"><%-post.comments.length-%></h2>
+                <button class="focus:outline-none">
+                    <img aria-hidden="true" alt="share icon" src="/icons/share-2-svgrepo-com.svg" class="w-6 h-6"/>
+                </button>
+            </div>
+            <button class="focus:outline-none">
+                <img aria-hidden="true" alt="bookmark icon" src="/icons/save-svgrepo-com.svg" class="w-6 h-6"/>
+            </button>
+        </div>
+        <div class="flex mt-4 space-x-2">
+            <% if (locals.user){ %>
+                <form action="/comments/create" method="POST" >
+            <input type="text" name="content" class="flex-1 px-3 py-2 bg-white-100 dark:bg-white-900 text-black-900 dark:text-black-100 rounded focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600" placeholder="Add a comment...">
+            <input type="hidden" name="post" value="<%= post._id %>">
+            <button class="px-3 py-2 bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600">Submit</button>
+                </form>
+            <% } %>
+          </div>
+          <div class="mt-4">
+            <p class="text-sm text-zinc-700 dark:text-black-300">
+                <span class="font-bold text-zinc-900 dark:text-black-100"></span>
+                <div id="post-comments-<%= post._id %>" class="max-h-11 overflow-y-auto">
+                    <ul>
+                        <% for(comment of post.comments) { %>
+                            <%- include('_comment') -%>
+                        <% } %>
+                    </ul>
+                </div>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+

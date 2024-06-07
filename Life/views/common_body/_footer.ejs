@@ -1,0 +1,15 @@
+<footer class="bg-white shadow p-4 flex justify-between items-center border-t-2 border-white-500">
+    <div class="text-zinc-600">Made with <span class="text-red-500">❤️</span> by <a href="#" class="text-blue-500">Ajay Dudave</a></div>
+    <div class="flex items-center space-x-2">
+      <img aria-hidden="true" alt="logo" src="/img/logo1.png" class="h-8 w-13"/>
+    </div>
+    <div class="flex space-x-4">
+        <% if(locals.user) {%>  
+            <a href="#" class="text-zinc-600">Feed</a>
+            <a href="#" class="text-zinc-600">Settings</a>  
+        <%} else{%>
+            <a href="/users/sign-in" class="text-zinc-600">Login</a>
+            <a href="http://localhost:3000/" class="text-zinc-600">Sign up</a>
+       <%} %>
+    </div>
+  </footer>

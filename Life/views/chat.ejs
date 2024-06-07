@@ -1,0 +1,231 @@
+<div id="home_c">
+    <div id="left_home">
+        <!-- Profile Photo name -->
+        <img src="<%= user.avatar%>" alt="" onerror="this.onerror=null; this.src='/img/avatar.png'">
+        <h1><%=user.name%></h1>
+        <p>@<%=user.username%></p>
+        <hr>
+        <!-- post following -->
+        <div style="display: flex; padding-left: 5%; padding-top: 3%; padding-bottom: 3%; text-align: center;">
+            <div style="padding-left: 1%;">
+                <h2><%= user.totalPost %></h2>
+                <p>Post</p>
+            </div>
+            <div style="padding-left: 13%;" id="totalFollowers" onmouseover="showFollowersList()" onmouseout="hideFollowersList()">
+                <h2><%=user.totalFollowers%></h2>
+                <div id="followersList" style="display: none; position: absolute; top: 45.5%; left: 9%; background-color: white; padding: 10px; max-height: 11.5%; overflow-y: auto; ">
+                    <ul>
+                      <% followers.forEach(follower => { %>
+                        <a href="/users/profile/<%= follower.current_user._id %>" style="color: inherit;text-decoration: none;">
+                        <div style="display: flex; align-items: center;">
+                            <img src="<%= follower.current_user.avatar %>" alt="" style="width: 30px; height: 30px; margin-right: 10px;">
+                            <p><%= follower.current_user.name %> (<%= follower.current_user.username %>)</p>
+                        </div>
+                        </a>
+                        <br>
+                      <% }); %>
+                    </ul>
+                  </div>
+                <p>Followers</p>
+            </div>
+            <div style="padding-left: 13%;" id="totalFollowing" onmouseover="showFollowingList()" onmouseout="hideFollowingList()">
+                <h2><%=user.totalFollowing%></h2>
+                <div id="followingList" style="display: none; position: absolute; top: 45.5%; left: 17.3%; background-color: white; padding: 10px; max-height: 11.5%; overflow-y: auto; ">
+                    <ul>
+                        <% following.forEach(follow => { %>
+                            <a href="/users/profile/<%= follow.followingId._id %>" style="color: inherit;text-decoration: none;">
+                            <div style="display: flex; align-items: center;">
+                              <img src="<%= follow.followingId.avatar %>" alt="" style="width: 30px; height: 30px; margin-right: 10px;">
+                              <p><%= follow.followingId.name %> (<%= follow.followingId.username %>)</p>
+                            </div>
+                            </a>
+                          <br>
+                        <% }); %>
+                      </ul>
+                  </div>
+                <p>Following</p>
+            </div>
+        </div>
+        <hr>
+        <div>
+            <div id="h_icon">
+                <i class="bi bi-house-door"></i>
+                <a href="http://localhost:3000/">
+                    <h2>Home</h2>
+                </a>
+            </div>
+            <div id="h_icon">
+                <i class="bi bi-person"></i>
+                <a href="/users/profile/<%=user.id%>">
+                    <h2>Profile</h2>         
+                </a>
+            </div>
+            <div id="h_icon">
+                <i class="bi bi-gear"></i>
+                <a href="/users/settings/<%=user.id%>">
+                    <h2>Settings</h2>         
+                </a>
+            </div>
+        </div>
+        <hr>
+        <div class="online-users">
+            <h4>Users</h4>
+            <div class="online-users-box">
+            <ul class="list-group">
+                <%
+                    if(users.length > 0){
+                        for(let i=0; i<users.length; i++){
+                            %>
+                                <li class="cursor-pointer user-list online-all-users" data-id="<%= users[i]['_id'] %>" data-name="<%= users[i]['name'] %>" data-img="<%= users[i]['avatar'] %>">
+                                    <img src="<%= users[i]['avatar'] %>" alt="" style="width: 15%; height: 40px;" onerror="this.onerror=null; this.src='/img/avatar.png'">
+                                    <p><%= users[i]['name'] %></p>
+                                    <%
+                                        if(users[i]['is_online'] == 1){
+                                            %>
+                                                <sup class="online-status" id="<%= users[i]['_id']%>-status">Online</sup>
+                                            <%
+                                        }
+                                        else{
+                                            %>
+                                                <sup class="offline-status" id="<%= users[i]['_id']%>-status">Offline</sup>
+                                            <%
+                                        } 
+                                    %>
+                                </li>
+                            <%
+                        }
+                    }
+                %>
+            </ul>
+            </div>
+        </div>
+    </div>
+    <div id="right_home_message">
+            <section class="msger">
+                <header class="msger-header">
+                  <div class="msger-header-title">
+                    <div class="userName">
+                        <h5></h5>
+                    </div>
+                  </div>
+                </header>
+                <main class="msger-chat chat-container">
+                </main>
+                <form action="" id="chat-form" class="msger-inputarea">
+                  <input type="text" name="message" placeholder="Enter Message" id="message" class="msger-input" required>
+                  <button type="submit" class="msger-send-btn">Send</button>
+                </form>
+              </section>         
+    </div>
+</div>
+
+<script>
+    var sender_id = '<%= user._id %>';
+    var receiver_id;
+    var socket = io('/user-namespace', {
+        auth:{
+            token: '<%= user._id %>'
+        }
+    });
+    $(document).ready(function(){
+        $('.user-list').click(function(){
+            var userId = $(this).attr('data-id');
+            receiver_id = userId;
+
+            var userImg = $(this).attr('data-img');
+
+            var userName = $(this).attr('data-name');
+            if (userName !== null && userName !== '') {
+            $('.userName h5').html(userName);
+        }
+
+
+            socket.emit('existsChat', {sender_id:sender_id, receiver_id:receiver_id, userName:userName, userImg:userImg});
+        });
+    });
+
+    // update user online status
+    socket.on('getOnlineUser', function(data){
+        $('#'+data.user_id+'-status').text('Online');
+        $('#'+data.user_id+'-status').removeClass('offline-status');
+        $('#'+data.user_id+'-status').addClass('online-status');
+    });
+    socket.on('getOfflineUser', function(data){
+        $('#'+data.user_id+'-status').text('Offline');
+        $('#'+data.user_id+'-status').addClass('offline-status');
+        $('#'+data.user_id+'-status').removeClass('online-status');
+    });
+    // chat  save of user
+    $('#chat-form').submit(function(event){
+    event.preventDefault();
+
+    var message = $('#message').val();
+
+    $.ajax({
+        url:'/users/save-chat',
+        type: 'post',
+        data: { sender_id: sender_id, receiver_id: receiver_id, message:message},
+        success: function(response){
+            if(response.success){
+                // console.log(response.data.message);
+                $('#message').val('');
+                let chat = response.data.message;
+                console.log(chat);
+                let html = `
+                <div class="current-user-chat">
+                    <h5>`+chat+`</h5>
+                </div>
+                `;
+                $('.chat-container').append(html);
+                socket.emit('newChat', response.data);
+            }
+            else{
+                alert(response.msg);
+            }
+            scrollChat();
+        }
+    });
+});
+    socket.on('loadNewChat', function(data){
+        if(sender_id == data.receiver_id && receiver_id == data.sender_id){
+            let html = `
+                    <div class="distance-user-chat">
+                        <h5>`+data.message+`</h5>
+                    </div>
+                    `;
+                    $('.chat-container').append(html);
+        }
+        scrollChat();
+});
+
+// load old chats
+    socket.on('loadChats', function(data){
+        $('.chat-container').html('');
+        
+        var chats = data.chats;
+        let html = '';
+        for(let x=0; x < chats.length; x++){
+
+            let addClass = '';
+            if(chats[x]['sender_id'] == sender_id){
+                addClass = 'current-user-chat';
+            }
+            else{
+                addClass = 'distance-user-chat';
+
+            }
+            html +=`
+            <div class='`+addClass+`'>
+                <h5>`+chats[x]['message']+`</h5>
+            </div>
+            `;
+        }
+        $('.chat-container').append(html);
+        scrollChat();
+    });
+
+    function scrollChat(){
+        $('.chat-container').animate({ scrollTop: $('.chat-container')[0].scrollHeight }, 1000);
+
+    }
+</script>

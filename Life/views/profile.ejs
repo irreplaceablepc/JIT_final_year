@@ -1,0 +1,118 @@
+<div id="home_c">
+    <div id="left_home">
+        <!-- Profile Photo name -->
+        <img src="<%=profile_user.avatar%>" alt="" onerror="this.onerror=null; this.src='/img/avatar.png'">
+        <h1><%=profile_user.name%></h1>
+        <p>@<%=profile_user.username%></p>
+        <hr>
+        <!-- post following -->
+        <div style="display: flex; padding-left: 5%; padding-top: 3%; padding-bottom: 3%; text-align: center;">
+            <div style="padding-left: 1%;">
+                <h2><%= user.totalPost %></h2>
+                <p>Post</p>
+            </div>
+            <div style="padding-left: 13%;" id="totalFollowers" onmouseover="showFollowersList()" onmouseout="hideFollowersList()">
+                <h2><%=user.totalFollowers%></h2>
+                <div id="followersList" style="display: none; position: absolute; top: 45.5%; left: 9%; background-color: white; padding: 10px; max-height: 11.5%; overflow-y: auto; ">
+                    <ul>
+                      <% followers.forEach(follower => { %>
+                        <a href="/users/profile/<%= follower.current_user._id %>" style="color: inherit;text-decoration: none;">
+                        <div style="display: flex; align-items: center;">
+                            <img src="<%= follower.current_user.avatar %>" alt="" style="width: 30px; height: 30px; margin-right: 10px;">
+                            <p><%= follower.current_user.name %> (<%= follower.current_user.username %>)</p>
+                        </div>
+                        </a>
+                        <br>
+                      <% }); %>
+                    </ul>
+                  </div>
+                <p>Followers</p>
+            </div>
+            <div style="padding-left: 13%;" id="totalFollowing" onmouseover="showFollowingList()" onmouseout="hideFollowingList()">
+                <h2><%=user.totalFollowing%></h2>
+                <div id="followingList" style="display: none; position: absolute; top: 45.5%; left: 17.3%; background-color: white; padding: 10px; max-height: 11.5%; overflow-y: auto; ">
+                    <ul>
+                        <% following.forEach(follow => { %>
+                            <a href="/users/profile/<%= follow.followingId._id %>" style="color: inherit;text-decoration: none;">
+                            <div style="display: flex; align-items: center;">
+                              <img src="<%= follow.followingId.avatar %>" alt="" style="width: 30px; height: 30px; margin-right: 10px;">
+                              <p><%= follow.followingId.name %> (<%= follow.followingId.username %>)</p>
+                            </div>
+                            </a>
+                          <br>
+                        <% }); %>
+                      </ul>
+                  </div>
+                <p>Following</p>
+            </div>
+        </div>
+        <hr>
+        <div>
+            <div id="h_icon">
+                <i class="bi bi-house-door"></i>
+                <a href="http://localhost:3000/">
+                    <h2>Home</h2>
+                </a>
+            </div>
+            <div id="h_icon">
+                <i class="bi bi-person"></i>
+                <a href="/users/profile/<%=user.id%>">
+                    <h2>Profile</h2>         
+                </a>
+            </div>
+            <div id="h_icon">
+                <i class="bi bi-gear"></i>
+                <a href="/users/settings/<%=user.id%>">
+                    <h2>Settings</h2>         
+                </a>
+            </div>
+            <div id="h_icon">
+                <i class="bi bi-chat"></i>
+                <a href="/chatroute/chat">
+                    <h2>Chat</h2>         
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="right_home">
+        <body style="background-color: white;">
+            <div class="max-w-md mx-auto bg-white dark:bg-white-800 shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-zinc-800 dark:text-black mb-4">Edit Profile</h2>
+                <label class="block text-sm font-medium text-zinc-700 dark:text-black-300">Profile Picture</label>
+                <div class="pbox">
+                    <form action="/users/update/<%=profile_user.id%>" enctype="multipart/form-data" method="POST" id="uploadForm">
+                    <div class="pprofile-picture">
+                        <div class="pprofile-icon">
+                            <img src="<%=profile_user.avatar%>" alt="" onerror="this.onerror=null; this.src='/img/avatar.png'" width="100">
+                        </div>
+                        <div class="pprofile-button">
+                                <input type="file" name="avatar" placeholder="Profile picture" id="avatarInput" style="display: none;">
+                                <label for="avatarInput" id="uploadButton" class="pupload-button">Upload</label>
+                        </div>
+                    </div>
+                    <div class="pprofile-details">
+                        <label for="pdisplay-name">Display Name</label>
+                        <input type="text" name="name" id="pdisplay-name" value="<%=profile_user.name%>" required />
+                        <label for="pdisplay-name">E-Mail</label>
+                        <input type="text" name="email" id="pdisplay-name" value="<%=profile_user.email%>" required />
+                        <label for="pbio">Bio</label>
+                        <textarea type="text" name="bio" id="pbio"><%=profile_user.bio%></textarea>
+                        <input type="submit" id="pconfirm-button" value="Confirm">
+                    </div>
+                    </form>
+                    <div class="image-grid">
+                        <% userPosts.forEach(post => { %>
+                        <div class="image-item">
+                            <img src="<%= post.pimg %>" alt="" width="100%" onerror="this.onerror=null; this.src='/img/avatar.png'">
+                            <p><%= post.content %></p>
+                        </div>
+                        <% }) %>
+                    </div>
+                
+            </div>        
+            <script src = "/js/others.js"></script>
+        </div>
+        </body>
+    </div>
+</div>

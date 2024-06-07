@@ -1,0 +1,117 @@
+<div id="home_c">
+    <div id="left_home">
+        <!-- Profile Photo name -->
+        <img src="<%=user.avatar%>" alt="<%=user.name%>" onerror="this.onerror=null; this.src='/img/avatar.png'">
+        <h1><%=user.name%></h1>
+        <p>@<%=user.username%></p>
+        <hr>
+        <!-- post following -->
+        <div style="display: flex; padding-left: 5%; padding-top: 3%; padding-bottom: 3%; text-align: center;">
+            <div style="padding-left: 1%;">
+                <h2><%= user.totalPost %></h2>
+                <p>Post</p>
+            </div>
+            <div style="padding-left: 13%;" id="totalFollowers" onmouseover="showFollowersList()" onmouseout="hideFollowersList()">
+                <h2><%=user.totalFollowers%></h2>
+                <div id="followersList" style="display: none; position: absolute; top: 45.5%; left: 9%; background-color: white; padding: 10px; max-height: 11.5%; overflow-y: auto; ">
+                    <ul>
+                      <% followers.forEach(follower => { %>
+                        <a href="/users/profile/<%= follower.current_user._id %>" style="color: inherit;text-decoration: none;">
+                        <div style="display: flex; align-items: center;">
+                            <img src="<%= follower.current_user.avatar %>" alt="" style="width: 30px; height: 30px; margin-right: 10px;">
+                            <p><%= follower.current_user.name %> (<%= follower.current_user.username %>)</p>
+                        </div>
+                        </a>
+                        <br>
+                      <% }); %>
+                    </ul>
+                  </div>
+                <p>Followers</p>
+            </div>
+            <div style="padding-left: 13%;" id="totalFollowing" onmouseover="showFollowingList()" onmouseout="hideFollowingList()">
+                <h2><%=user.totalFollowing%></h2>
+                <div id="followingList" style="display: none; position: absolute; top: 45.5%; left: 17.3%; background-color: white; padding: 10px; max-height: 11.5%; overflow-y: auto; ">
+                    <ul>
+                        <% following.forEach(follow => { %>
+                            <a href="/users/profile/<%= follow.followingId._id %>" style="color: inherit;text-decoration: none;">
+                            <div style="display: flex; align-items: center;">
+                              <img src="<%= follow.followingId.avatar %>" alt="" style="width: 30px; height: 30px; margin-right: 10px;">
+                              <p><%= follow.followingId.name %> (<%= follow.followingId.username %>)</p>
+                            </div>
+                            </a>
+                          <br>
+                        <% }); %>
+                      </ul>
+                  </div>
+                <p>Following</p>
+            </div>
+        </div>
+        <hr>
+        <div>
+            <div id="h_icon">
+                <i class="bi bi-house-door"></i>
+                <a href="http://localhost:3000/">
+                    <h2>Home</h2>
+                </a>
+            </div>
+            <div id="h_icon">
+                <i class="bi bi-person"></i>
+                <a href="/users/profile/<%=user.id%>">
+                    <h2>Profile</h2>         
+                </a>
+            </div>
+            <div id="h_icon">
+                <i class="bi bi-gear"></i>
+                <a href="/users/settings/<%=user.id%>">
+                    <h2>Settings</h2>         
+                </a>
+            </div>
+            <div id="h_icon">
+                <i class="bi bi-chat"></i>
+                <a href="/chatroute/chat">
+                    <h2>Chat</h2>         
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="right_home">
+        <!-- password change form -->
+        <div class="mainDiv">
+            <div class="cardStyle">
+              <form action="/users/password/<%=user.id%>" method="post" name="signupForm" id="signupForm">
+                
+                <img src="/img/logo1.png" id="signupLogo"/>
+                
+                <h2 class="formTitle">
+                    <div id="user-info-box">
+                          <a href="/users/sign-out">Sign out</a>
+                    </div>
+                </h2>
+                
+              <div class="inputDiv">
+                <label class="inputLabel" for="password">New Password</label>
+                <input type="password" id="password" name="password" required>
+              </div>
+                
+              <div class="inputDiv">
+                <label class="inputLabel" for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword">
+              </div>
+              
+              <div class="buttonWrapper">
+                <button type="submit" id="submitButton" class="submitButton pure-button pure-button-primary">
+                  <span>Continue</span>
+                </button>
+              </div>
+                
+            </form>
+            </div>
+          </div>
+    </div>
+</div>
+
+
+
+
+
+

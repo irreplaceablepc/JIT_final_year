@@ -1,0 +1,29 @@
+<div id="up_container">
+    <div id="up_left">
+        <img src="/img/sign_up.png" alt="sign_up logo" style="width: 35vw; height: 80vh; border-radius: 8% 0 0 8%;">
+    </div>
+    <div id="up_right">
+        <h1 style="font-size: 50px;">Create an account</h1>
+        <p style="font-size: 20px;">Start sharing moments, one click at a time!</p>
+        <form action="/users/create" method="POST" style="padding-top: 5%;">
+        <input type="email" name="email" placeholder="Email" required style="margin-bottom: 10px; padding: 15px; border: 1px solid #ccc; border-radius: 4px; width: calc(100% - 280px); box-sizing: border-box; background-color: rgb(243, 243, 243);">
+        <input type="number" name="phone" placeholder="Phone Number" required style="margin-bottom: 10px; padding: 15px; border: 1px solid #ccc; border-radius: 4px; width: calc(100% - 240px); box-sizing: border-box; margin-left: 25px; background-color: rgb(243, 243, 243);">
+        <br>
+        <br>
+        <input type="text" name="name" placeholder="Full Name" required id="up_form">
+        <br>
+        <br>
+        <input type="text" name="username" placeholder="Username" required id="up_form">
+        <br>
+        <br>
+        <input type="password" name="password" placeholder="Password" required id="up_form">
+        <br>
+        <br>
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required id="up_form">
+        <br>
+        <br>
+        <input type="submit" value="Next" id="up_form" style="background-color: #0d6efd;">
+        </form>
+        <p>Have an account? <span style="color: blue;"><a href="http://localhost:3000/">Sign in</a></span></p>
+    </div>
+</div>

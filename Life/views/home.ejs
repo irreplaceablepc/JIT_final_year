@@ -1,0 +1,188 @@
+<% if(locals.user) {%>
+  <div id="home_c">
+      <div id="left_home">
+          <!-- Profile Photo name -->
+          <img src="<%=user.avatar%>" alt="<%=user.name%>" onerror="this.onerror=null; this.src='/img/avatar.png'">
+          <h1><%=user.name%></h1>
+          <p>@<%=user.username%></p>
+          <hr>
+          <!-- post following -->
+          <div style="display: flex; padding-left: 5%; padding-top: 3%; padding-bottom: 3%; text-align: center;">
+              <div style="padding-left: 1%;">
+                  <h2><%= user.totalPost %></h2>
+                  <p>Post</p>
+              </div>
+              <div style="padding-left: 13%;" id="totalFollowers" onmouseover="showFollowersList()" onmouseout="hideFollowersList()">
+                  <h2><%=user.totalFollowers%></h2>
+                  <div id="followersList" style="display: none; position: absolute; top: 45.5%; left: 9%; background-color: white; padding: 10px; max-height: 11.5%; overflow-y: auto; ">
+                      <ul>
+                        <% followers.forEach(follower => { %>
+                          <a href="/users/profile/<%= follower.current_user._id %>" style="color: inherit;text-decoration: none;">
+                          <div style="display: flex; align-items: center;">
+                              <img src="<%= follower.current_user.avatar %>" alt="" style="width: 30px; height: 30px; margin-right: 10px;">
+                              <p><%= follower.current_user.name %> (<%= follower.current_user.username %>)</p>
+                          </div>
+                          </a>
+                          <br>
+                        <% }); %>
+                      </ul>
+                    </div>
+                  <p>Followers</p>
+              </div>
+              <div style="padding-left: 13%;" id="totalFollowing" onmouseover="showFollowingList()" onmouseout="hideFollowingList()">
+                  <h2><%=user.totalFollowing%></h2>
+                  <div id="followingList" style="display: none; position: absolute; top: 45.5%; left: 17.3%; background-color: white; padding: 10px; max-height: 11.5%; overflow-y: auto; ">
+                      <ul>
+                          <% following.forEach(follow => { %>
+                              <a href="/users/profile/<%= follow.followingId._id %>" style="color: inherit;text-decoration: none;">
+                              <div style="display: flex; align-items: center;">
+                                <img src="<%= follow.followingId.avatar %>" alt="" style="width: 30px; height: 30px; margin-right: 10px;">
+                                <p><%= follow.followingId.name %> (<%= follow.followingId.username %>)</p>
+                              </div>
+                              </a>
+                            <br>
+                          <% }); %>
+                        </ul>
+                    </div>
+                  <p>Following</p>
+              </div>
+          </div>
+          <hr>
+          <div>
+              <div id="h_icon">
+                  <i class="bi bi-house-door"></i>
+                  <a href="http://localhost:3000/">
+                      <h2>Home</h2>
+                  </a>
+              </div>
+              <div id="h_icon">
+                  <i class="bi bi-person"></i>
+                  <a href="/users/profile/<%=user.id%>">
+                      <h2>Profile</h2>         
+                  </a>
+              </div>
+              <div id="h_icon">
+                  <i class="bi bi-gear"></i>
+                  <a href="/users/settings/<%=user.id%>">
+                      <h2>Settings</h2>         
+                  </a>
+              </div>
+              <div id="h_icon">
+                  <i class="bi bi-chat"></i>
+                  <a href="/chatroute/chat">
+                      <h2>Chat</h2>         
+                  </a>
+              </div>
+          </div>
+          <hr>
+          <div id="userdetails">
+              <h4>Friends</h4>
+              <div class="users-list">
+                  <% for(user of all_users) {%>
+                      <div class="all-users">
+                          <img src="<%= user.avatar %>" alt="" style="width: 15%; height: 40px;" onerror="this.onerror=null; this.src='/img/avatar.png'">
+                          <p>
+                              <a href="/users/profile/<%= user.id %>"><%= user.name %></a>
+                          </p>
+                      </div>
+                  <%}%>
+              </div>
+          </div>
+      </div>
+            <div id="right_home">
+                <!-- post create show div -->
+                <div id="pageContent" class="page-content">
+                    
+                    <div id="page1">
+                        <div class="fixed inset-0 flex items-center justify-center bg-zinc-900 bg-opacity-50 z-50">
+                            <div class="bg-white rounded-lg shadow-lg max-w-lg w-full">
+                              <div class="border-b p-4">
+                                <h2 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200">Create new post</h2>
+                              </div>
+                              <div class="p-4">
+                                <form action="/posts/pimgs/<%= user.id %>" enctype="multipart/form-data" method="POST" id="post-form" onsubmit="validateForm(event)">
+                                  <div class="border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg p-10 text-center cursor-pointer" onclick="handleFileSelect(event)">
+                                    <img id="preview-image" aria-hidden="true" alt="upload" src="https://placehold.co/50x50" class="mx-auto mb-2 hidden" />
+                                    <p id="upload-text" class="text-zinc-500 dark:text-zinc-400">Click to upload an image</p>
+                                    <p class="text-sm text-zinc-400 dark:text-zinc-500">Maximum file size 5 MB.</p>
+                                    <input type="file" name="pimgs" class="hidden" >
+                                  </div>
+                                  <textarea name="content" class="w-full mt-4 p-2 border rounded-lg placeholder-zinc-500 dark:bg-zinc-700 dark:text-zinc-200 dark:placeholder-zinc-400" rows="3" placeholder="Write a caption..." ></textarea>
+                                  <div class="flex justify-end items-center border-t p-4 space-x-2">
+                                    <button type="button" class="bg-zinc-200 dark:bg-zinc-600 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-lg">Cancel</button>
+                                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Post</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+                <!-- feed and post show box -->
+                <div class="posts-container" >
+                    <ul>
+                        <% for(post of posts){ %>
+                        
+                            <%- include('_post') -%>
+                                
+                        <%} %>
+                    </ul>
+                </div>
+                <!-- end feeds and post show box -->
+            </div>
+            
+        </div>
+        
+    <% } else{ %>
+        <main class="flex-grow flex items-center justify-center p-4">
+            <div class="flex flex-col md:flex-row bg-white dark:bg-zinc-800 shadow-md rounded-lg overflow-hidden max-w-4xl w-full">
+                <img src="/img/sign_up.png" alt="Profile Image" class="w-full md:w-1/2 object-cover" crossorigin="anonymous">
+                <div class="p-8 md:w-1/2 bg-white flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold">Create an account</h2>
+                    <p class="text-zinc-600 mb-4">Start sharing moments, one click at a time!</p>
+                    <form action="/users/create" method="POST" class="space-y-4">
+                      <div class="flex space-x-4">
+                        <input type="email" name="email" placeholder="Email" class="w-1/2 p-2 border rounded-md">
+                        <input type="text" placeholder="Phone Number" name="phone" class="w-1/2 p-2 border rounded-md">
+                      </div>
+                      <input type="text" name="name" placeholder="Full Name" class="w-full p-2 border rounded-md">
+                      <input type="text" name="username" placeholder="Username" class="w-full p-2 border rounded-md">
+                      <input type="password" name="password" placeholder="Password" class="w-full p-2 border rounded-md">
+                      <input type="password" name="confirm_password" placeholder="Confirm Password" class="w-full p-2 border rounded-md">
+                      <button type="submit" class="w-full p-2 bg-blue-600 text-white rounded-md">Next</button>
+                    </form>
+                    <p class="text-zinc-600 mt-4">Have an account? <a href="/users/sign-in" class="text-blue-600">Sign in</a></p>
+                  </div>
+            </div>
+        </main>
+    <%}%>
+<script src="/js/others.js"></script>
+<script>
+    function handleFileSelect(event) {
+      const fileInput = document.querySelector('input[name="pimgs"]');
+      const previewImage = document.getElementById('preview-image');
+      const uploadText = document.getElementById('upload-text');
+      fileInput.click();
+  
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            previewImage.classList.remove('hidden');
+            uploadText.classList.add('hidden');
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  
+    function validateForm(event) {
+      const fileInput = document.querySelector('input[name="pimgs"]');
+      if (!fileInput.files.length) {
+        event.preventDefault();
+        alert('Please select an image.');
+      }
+    }
+  </script>
